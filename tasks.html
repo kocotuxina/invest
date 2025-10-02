@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример заголовка</title>
+    <style>
+        body {
+            color: #000000;
+            background: #76bdff; 
+        }
+    </style>
+</head>
+<body>
+    <script>
+        console.log('Hello world!');
+    </script>
+
+    <h1>Моя первая страница</h1>
+    <div id="ball">
+        <h2 class="odd">
+            Мячик
+        </h2>
+        <b>Наша Таня громко плачет:</b><br>
+        <i>Уронила в речку мячик.</i><br>
+        -Тише, Танечка, не плачь:<br>
+        <strike>Не утонет в речке мяч.</strike><br>
+        <i><b>Автор: А. Л. Барто</b></i>
+    </div>
+    <div id="img">
+        <h2 class="odd">
+            Весёлые картинки
+        </h2>
+        <img src="img/Весёлые_картинки.jpg" alt="Веселые картинки"><br>
+        <img src="img/Karandash.gif" alt="Карандаш"><br>
+        <img src="img/1609447_99860-640x0.jpg" alt="Котик">
+    </div>
+    <div id="zvonki">
+        <h2 class="odd">
+            Расписание звонков
+        </h2>
+        <ol>
+            <li>
+                08:20 - 09:50
+            </li>
+            <li>
+                10:00 - 11:30
+                <ul>
+                    <li>Перемена 40 мин</li>
+                </ul>
+            </li>
+            <li>
+                12:10 - 13:40
+            </li>
+            <li>
+                13:50 - 15:20
+            </li>
+            <li>
+                15:30 - 17:00
+                <ul>
+                    <li>Перемена 20 минут</li>
+                </ul>
+            </li>
+            <li>
+                17:20 - 18:50
+            </li>
+            <li>
+                19:00 - 20:30
+            </li>
+        </ol>
+    </div>
+    <div id="task">
+        <h2 class="odd">
+            Расписание пар
+        </h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>Номер пары</td>
+                    <td>Название предмета</td>
+                    <td>Аудитория</td>
+                    <td>Преподаватель</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Методы оптимизации</td>
+                    <td>223</td>
+                    <td>Банников А.С.</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Численные методы</td>
+                    <td>219</td>
+                    <td>Латыпова Н.В.</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Методы оптимизации</td>
+                    <td>219</td>
+                    <td>Петров Н.Н.</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Параллельное программирование</td>
+                    <td>217</td>
+                    <td>Новиков А.К.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="diary">
+        <h2 class="odd">
+            Дневник
+        </h2>
+        <form action="" method="post">
+            <div>
+                <p><b>ФИО</b></p>
+                <p>
+                <input type="text" name="fio" value="Косотухина Татьяна Алексеевна">
+                </p>
+            </div>
+            <div>
+                <p><b>Пол</b></p>
+                <p>
+                    <input name="pol" type="radio" value="male">
+                    Мужской
+                </p>
+                <p>
+                    <input name="pol" type="radio" value="female" checked>
+                    Женский
+                </p>
+            </div>
+            <div>
+                <p><b>Школа</b></p>
+                <p>
+                <input type="text" name="school" value="СОШ №1">
+                </p>
+            </div>
+            <div>
+                <p><b>Населенный пункт</b></p>
+                <p>
+                <input type="text" name="city" value="Ижевск">
+                </p>
+            </div>
+            <div>
+                <p><b>Класс</b></p>
+                <p>
+                <input type="text" name="class" value="11">
+                </p>
+            </div>
+            <div>
+                <p><b>Цвет обложки</b></p>
+                <p>
+                    <input type="color" name="color">
+                </p>
+            </div>
+            <div>
+                <p><b>Год начала учебного года</b></p>
+                <p>
+                    <input type="number" name="year" value="2018">
+                </p>
+            </div>
+            <div>
+                <p><b>Email</b></p>
+                <p>
+                    <input type="email" name="email" value="tkosot2001@gmail.com">
+                </p>
+            </div>
+            <div>
+                <p><b>Телефон</b></p>
+                <p>
+                    <input type="tel" name="tel" value="89827920448">
+                </p>
+            </div>
+        </form>
+    </div>
+    <div id="buhgalterya">
+        <h2 class="odd">
+            Бухгалтерия
+        </h2>
+    </div>   
+</body>
+</html>
