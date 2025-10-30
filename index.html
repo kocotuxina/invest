@@ -12,6 +12,19 @@
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+
+		<style>
+			#ror_ditz {
+				font-size: 75%;
+			}
+			h3 {
+				color: white !important;
+				border: 2px dotted white;
+				padding: 5px;
+				background-color: brown;
+				border-radius: 10px;
+			}
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
@@ -47,7 +60,7 @@
 				</section>
 				<!-- <section data-markdown="markdown/rate_of_return.md"></section> Одно и то же-->
 				<section>
-					<section data-markdown>
+					<section data-markdown id="ror_ditz">
 						<script type="text/template">
 							### Доходность по методу Дитца
 							- $R$ - доходность портфеля в процентах (rate of return)
@@ -55,11 +68,6 @@
 							- $S_b$ - стоимость портфеля на начало периода (begin of the period)
 							- $S_a$ - пополнение счета (account refill)
 							- $S_w$ - снятие со счета (withdrawal fropm the account)
-						</script>
-					</section>
-					<section data-markdown>
-						<script type="text/template">
-							### Доходность по методу Дитца
 							- $W_t$ - временной весовой коэффициент, который применяется к каждому денежному потоку в портфеле (time)
 							- $T$ - длительность отчетного периоды, за который считается доходность
 							- $t$ - количество дней, которое прошло с момента начала инвестирования
