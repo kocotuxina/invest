@@ -71,6 +71,16 @@
         td {
             padding: 5px;
         }
+        #wrapper {
+            font-size: 13px;
+        }
+        #wrapper table, #wrapper tr, #wrapper th, #wrapper td{
+            border: 1px black solid;
+            padding: 3px;
+        }
+        .vacation {
+            background-color: aquamarine;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +229,7 @@
             <div>
                 <p><b>Цвет обложки</b></p>
                 <p>
-                    <input type="color" name="color">
+                    <input type="color" name="color" value="#c5b0b0">
                 </p>
             </div>
             <div>
@@ -240,12 +250,18 @@
                     <input type="tel" name="tel" value="89827920448">
                 </p>
             </div>
+            <div>
+                <p>
+                    <input type="button" id="create" value="Создать">
+                </p>
+            </div>
         </form>
     </div>
     <div id="buhgalterya">
         <h2 class="odd">
             Бухгалтерия
         </h2>
+        <div id="wrapper"></div>
         <script>
         let employees = [
             {
@@ -392,7 +408,7 @@
                 const months = gender === 'm' ? 64*12 : 59*12;
                 const remainsMonth = months - year*12 + month;
                 if (remainsMonth < 0){
-                    return null;
+                    return [null, null];
                 }
                 if (remainsMonth % 12 === 0) {
                    return [remainsMonth/12 + 1, 0];
@@ -405,29 +421,105 @@
                 return `${tempDate.getDate()}.${months[tempDate.getMonth()][1]}.${tempDate.getFullYear()}`;
             }
 
+            function ageCase (age) {
+                if ((age%10 == 1) && (age%100 != 11)) {
+                    return 'год';
+                }
+                if ((age%10 == 2 || age%10 == 3 ||  age%10 == 4) && (age%100 != 12 || age%100 != 13 || age%100 != 14)) {
+                    return 'года';
+                }
+                return 'лет';
+                
+            }
             const months = [
-                ['', 'января'],
-                ['', 'февраля'],
-                ['', 'марта'],
-                ['', 'апреля'],
-                ['', 'мая'],
-                ['', 'июня'],
-                ['', 'июля'],
-                ['', 'августа'],
-                ['', 'сентября'],
-                ['', 'октября'],
-                ['', 'ноября'],
-                ['', 'декабря'],
+                ['Январь', 'января'],
+                ['Февраль', 'февраля'],
+                ['Март', 'марта'],
+                ['Апрель', 'апреля'],
+                ['Май', 'мая'],
+                ['Июнь', 'июня'],
+                ['Июль', 'июля'],
+                ['Август', 'августа'],
+                ['Сентябрь', 'сентября'],
+                ['Октябрь', 'октября'],
+                ['Ноябрь', 'ноября'],
+                ['Декабрь', 'декабря'],
             ];
-            for(let item of employees) {
-                const netSalary = calculateNetSalary(item.salary);
-                const yearSalary = calculateYearSalary(netSalary, item.salary13);
-                const taxReturn = calculateTaxReturn(yearSalary);
-                const newSalary = calculateNewSalary(item.salary);
-                const age = calculateAge(item.birthday);
-                const remains = remainsToPension(item.gender, age);
-                const formatofBirthday = newFormatofBirthday(item.birthday, months);
-                console.log(item.surname, netSalary, yearSalary, taxReturn, newSalary, age, remains, formatofBirthday); 
+
+
+            let table = `<table><thead>
+                <tr>
+                    <th>№</th>
+                    <th>ФИО</th> 
+                    <th>Дата рождения</th> 
+                    <th>Возраст</th> 
+                    <th>Зарплата гросс.</th>   
+            `;
+            for(let i = 0; i < 12; i++) {
+                table += `<th>${months[i][0]}</th>`;
+            }
+            table += `<th>Зарплата в ${new Date().getFullYear()+1} году</th>
+                <th>Общий доход</th>
+                <th>К вычету</th>
+                <th>Ост. до пенсии</th>
+            </tr>
+            </thead>
+            <tbody>
+            `;
+            const rub = "&#x20bd";
+            
+            for(let i in employees) {
+                item = employees[i];
+                [ageYear, ageMonth] = calculateAge(item.birthday);
+                [rtpYear, rtpMonth] = remainsToPension(item.gender, [ageYear, ageMonth]);
+
+                table += `<tr>
+                    <td>${+i+1}</td>
+                    <td>${item.surname} ${item.name} ${item.patronymic}</td>
+                    <td>${newFormatofBirthday(item.birthday, months)}</td>
+                    <td>${ageYear} ${ageCase(ageYear)}</td>
+                    <td>${item.salary}${rub}</td>`;
+                let ys = calculateYearSalary(item.salary, item.salary13);
+                for (let j = 0; j < 11; j++) {
+                    table += `<td ${j===item.vacation ? 'class="vacation"' : ''}>${calculateNetSalary(item.salary)}${rub}</td>`;
+                }
+                table += `<td ${11===item.vacation ? 'class="vacation"' : ''}>${calculateNetSalary(item.salary)+calculateNewSalary(item.salary13)}${rub}</td>
+                <td>${calculateNewSalary(item.salary)}${rub}</td>
+                <td>${ys}${rub}</td>
+                <td>${calculateTaxReturn(ys)}${rub}</td>
+                <td>${rtpYear !== null ? (rtpYear + ageCase(rtpYear)) : "Уже на пенсии"}</td>
+                `;
+                table += `</tr>`;
+            }
+
+            table += `</tbody></table>`;
+            window.onload = () => {
+                document.querySelector("#wrapper").innerHTML = table;
+
+                document.querySelector("#create").onclick = (e) => {
+                    e.preventDefault();
+                    let newWin = window.open("about:blank", "Дневник", "width=420,height=594");
+                    let template = `
+                    <style>
+                        body {
+                            margin-top: 100px;
+                            text-align: center;
+                            font-size: large;
+                            background-color: ${document.querySelector('[name="color"').value}
+                        }
+                        .contact {
+                            margin-top: 50px;
+                        }
+                    </style>
+                    <h1>Дневник</h1>
+                    <div>Учени${document.querySelector('[name="pol"]:checked').value == "male" ? "ка" : "цы"} ${document.querySelector('[name="class"]').value} класса</div>
+                    <div>${document.querySelector('[name="school"]').value} ${document.querySelector('[name="city"]').value}</div>
+                    <div>${document.querySelector('[name="fio"]').value}</div>
+                    <div>${document.querySelector('[name="year"]').value}/${+document.querySelector('[name="year"]').value+1} учебного года</div>
+                    <div class='contact'>${document.querySelector('[name="email"]').value}, ${document.querySelector('[name="tel"]').value}</div>
+                    `;
+                    newWin.document.write(template);
+                }
             }
         </script>              
     </div>   
