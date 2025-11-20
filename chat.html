@@ -40,21 +40,38 @@
             margin-bottom: 60px;
         }
         .message {
-            background-color: #ccc;
-            border: 1px solid #999;
             padding: 10px;
             margin: 10px;
             border-radius: 10px;
             width: fit-content;
+        }
+        .friend {
+            background-color: #ccc;
+            border: 1px solid #999;
+        }
+        .me {
+            background-color: #7282bf;
+            border: 1px solid #261591;
+            align-self: flex-end;
+        }
+        .author {
+            display: block;
+            font-weight: bold;
+            text-decoration-line: underline;
+            font-size: large;
+            padding-bottom: 10px;
+        }
+        .time {
+            font-size: x-small;
+            display: block;
+            text-align: right;
+            padding-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div id="wrapper">
         <div id="chat">
-            <div class="message">
-                Hello world!
-            </div>
         </div>
         <div id="send">
             <input type="text" id="message">
@@ -65,7 +82,7 @@
         const me = "rabbit";
         function newMessage ({id, message, time, author}) {
             let div = document.createElement('div');
-            div.id = 'message-'.id;
+            div.id = 'message-'+id;
             if (author === undefined || author === me) {
                 div.className = 'message me';
             }
@@ -88,9 +105,7 @@
             let timeSpan = document.createElement("span");
             timeSpan.className = 'time';
             let date = new Date(time*1000);
-            timeSpan.textContent = ` ${date.getHours()}:
-            ${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}:
-            ${date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds()}
+            timeSpan.textContent = ` ${date.getHours()}:${date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()}:${date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds()}
             `;
             div.appendChild(timeSpan);
 
@@ -102,6 +117,30 @@
             });
         }
 
+        function getMessagesFromServer (sec) {
+            let xmlhttp = new XMLHttpRequest();
+            const url = 'https://chat.9pr.ru/message/'+sec;
+            xmlhttp.open('GET', url);
+            xmlhttp.send(null);
+            xmlhttp.onload = () => {
+                let data = xmlhttp.responseText;
+                data = JSON.parse(data);
+                if (data.error !== undefined) {
+                    console.error(data.error);
+                }
+                else {
+                    for(let i in data) {
+                        if (document.querySelector('#message-'+data[i].id) == null) {
+                            newMessage(data[i]);
+                        }
+                    }
+                }
+            }
+            localStorage.setItem('time', Math.floor(Date.now()/1000));
+        }
+
+
+
         function sendMessage (e) {
             let message = document.querySelector("#message");
             let text = message.value;
@@ -112,18 +151,21 @@
         }
 
         function sendMessageByEnter (e) {
-            if (e.code = "Enter") {
+            if (e.code == "Enter") {
                 sendMessage();
             }
         }
         
         window.onload = () => {
+            localStorage.setItem('time', Math.floor(Date.now()/1000));
             document.querySelector("#send_message").onclick = sendMessage;
             document.querySelector("#message").onkeyup = sendMessageByEnter;
 
-            for(let i = 0; i < 30; i++){
-                newMessage({id:"33"+i, message: "Сообщение №"+i, time: 1929292, author: "Кинг-конг"});
-            }
+            getMessagesFromServer(0);
+
+            setInterval(() => {
+                getMessagesFromServer(localStorage.getItem('time')-5);
+            }, 5000);
         }
     </script>
 </body>
