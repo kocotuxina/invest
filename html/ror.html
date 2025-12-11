@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="../dist/theme/sky.css" id="theme">
     <style>
         html, body, #ror {
             margin: 0;
@@ -28,6 +31,31 @@
 
     </div>
     <script>
+
+        function DietzRoR (Sb, Se, Db, De, cashFlows) {
+            const ms = 1000 * 60 * 60 * 24;
+            const T = (De - Db) / ms;
+            let S = 0;
+            let Sw = 0;
+            for (const f of cashFlows) {
+                const t = (f.date - Db) / ms;
+                const Wt = 1 - (t/T);
+                S += f.amount;
+                Sw += f.amount * Wt;
+            }
+            const numerator = Se - Sb - S;
+            const denominator = Sb + Sw;
+            if (denominator === 0) {
+                console.log('Ошибка. Деление на 0');
+                return;
+            }
+            return (numerator/denominator) * 100;
+        }
+
+        function formatDate (date, months) {
+            return `${date.getDate()} ${months[date.getMonth()][1]} ${date.getFullYear()}`;
+        }
+
         const cashFlows = [
     { date: new Date('2025-01-15'), amount: 25000 },
     { date: new Date('2025-02-05'), amount: -12000 },
@@ -66,6 +94,30 @@
     { date: new Date('2025-06-22'), amount: 19500 },
     { date: new Date('2025-07-10'), amount: -12000},
     ];
+
+    cashFlows.sort((a, b) => {
+        return a.date - b.date;
+    });
+
+    const months = [
+                ['Январь', 'января'],
+                ['Февраль', 'февраля'],
+                ['Март', 'марта'],
+                ['Апрель', 'апреля'],
+                ['Май', 'мая'],
+                ['Июнь', 'июня'],
+                ['Июль', 'июля'],
+                ['Август', 'августа'],
+                ['Сентябрь', 'сентября'],
+                ['Октябрь', 'октября'],
+                ['Ноябрь', 'ноября'],
+                ['Декабрь', 'декабря'],
+            ];
+    const Sb = 100000;
+    const Se = 420000;
+    const Db = new Date('2025-01-01');
+    const De = new Date('2025-12-31');
+
         let table = '<table>';
             table += `<thead><tr>
                 <th>Дата начала периода</th>
@@ -75,11 +127,11 @@
                 <th>Доходность</th>
                 </tr></thead><tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>${formatDate(Db, months)}</td>
+                    <td>${Sb}</td>
+                    <td>${formatDate(De, months)}</td>
+                    <td>${Se}</td>
+                    <td>${DietzRoR(Sb, Se, Db, De, cashFlows).toFixed(2)}</td>
                 </tr>
                 `;
             table += '</tbody></table>';
@@ -92,9 +144,9 @@
             `;
             for (let i = 0; i < cashFlows.length; i++) {
                 table += `<tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>${cashFlows[i].amount < 0 ? 'Снятие' : 'Пополнение'}</td>
+                    <td>${formatDate(cashFlows[i].date, months)}</td>
+                    <td>${Math.abs(cashFlows[i].amount)}&#x20bd;</td>
                     </tr>`;
             }
             table += `</tbody></table>`;

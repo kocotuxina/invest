@@ -24,6 +24,20 @@
 				background-color: brown;
 				border-radius: 10px;
 			}
+			#ror {
+            width: 80vw;
+            height: 80vh;
+			overflow-y: scroll;
+        }
+       #ror table {
+            margin: 10px;
+
+        }
+        #ror table, #ror th, #ror td {
+            margin: 3px;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
 		</style>
 	</head>
 	<body>
@@ -87,7 +101,10 @@
 					</section>
 				</section>
 				<section data-fullscreen data-menu-title="Программа доходности по Дитцу">
-					<iframe data-src="html/ror.html" class="strech"></iframe>
+					<h3>
+						Программа доходности по Дитцу
+					</h3>
+					<div id="ror"></div>>
 				</section>
 				<section class="center">
 					<h2>
@@ -103,11 +120,11 @@
 					</p>
 				</section>
 				<section data-fullscreen data-menu-title="Линейный график">
-					<iframe data-src="html/line.html" class="strech"></iframe>
+					<iframe data-src="html/line.html" class="stretch"></iframe>
 				</section>
 				<section data-markdown="markdown/candlestick.md"></section>
 				<section data-fullscreen data-menu-title="Свечной график">
-					<iframe data-src="html/candlestick.html" class="strech"></iframe>
+					<iframe data-src="html/candlestick.html" class="stretch"></iframe>
 				</section>
 				<section>
 					<h3>Смешная картинка</h3>
@@ -129,6 +146,131 @@
 				</section>
 			</div>
 		</div>
+
+
+		<script>
+
+			function DietzRoR (Sb, Se, Db, De, cashFlows) {
+				const ms = 1000 * 60 * 60 * 24;
+				const T = (De - Db) / ms;
+				let S = 0;
+				let Sw = 0;
+				for (const f of cashFlows) {
+					const t = (f.date - Db) / ms;
+					const Wt = 1 - (t/T);
+					S += f.amount;
+					Sw += f.amount * Wt;
+				}
+				const numerator = Se - Sb - S;
+				const denominator = Sb + Sw;
+				if (denominator === 0) {
+					console.log('Ошибка. Деление на 0');
+					return;
+				}
+				return (numerator/denominator) * 100;
+			}
+	
+			function formatDate (date, months) {
+				return `${date.getDate()} ${months[date.getMonth()][1]} ${date.getFullYear()}`;
+			}
+	
+			const cashFlows = [
+		{ date: new Date('2025-01-15'), amount: 25000 },
+		{ date: new Date('2025-02-05'), amount: -12000 },
+		{ date: new Date('2025-02-20'), amount: 18000 },
+		{ date: new Date('2025-03-10'), amount: -8500 },
+		{ date: new Date('2025-03-25'), amount: 32000 },
+		{ date: new Date('2025-04-08'), amount: -15000 },
+		{ date: new Date('2025-04-22'), amount: 21000 },
+		{ date: new Date('2025-05-14'), amount: -9000 },
+		{ date: new Date('2025-05-28'), amount: 16000 },
+		{ date: new Date('2025-06-11'), amount: -11000 },
+		{ date: new Date('2025-06-25'), amount: 28000 },
+		{ date: new Date('2025-07-09'), amount: -7000 },
+		{ date: new Date('2025-07-23'), amount: 19000 },
+		{ date: new Date('2025-08-12'), amount: -13000 },
+		{ date: new Date('2025-08-26'), amount: 24000 },
+		{ date: new Date('2025-09-09'), amount: -10000 },
+		{ date: new Date('2025-09-23'), amount: 30000 },
+		{ date: new Date('2025-10-11'), amount: -8000 },
+		{ date: new Date('2025-10-25'), amount: 22000 },
+		{ date: new Date('2025-11-08'), amount: -14000 },
+		{ date: new Date('2025-11-22'), amount: 26000 },
+		{ date: new Date('2025-12-10'), amount: -9500 },
+		{ date: new Date('2025-12-24'), amount: 17000 },
+		{ date: new Date('2025-01-13'), amount: -12500 },
+		{ date: new Date('2025-01-27'), amount: 29000 },
+		{ date: new Date('2025-02-10'), amount: -8200 },
+		{ date: new Date('2025-02-24'), amount: 18500 },
+		{ date: new Date('2025-03-12'), amount: -11500 },
+		{ date: new Date('2025-03-26'), amount: 23000 },
+		{ date: new Date('2025-04-09'), amount: -7500 },
+		{ date: new Date('2025-04-23'), amount: 16500 },
+		{ date: new Date('2025-05-11'), amount: -13500 },
+		{ date: new Date('2025-05-25'), amount: 27000 },
+		{ date: new Date('2025-06-08'), amount: -9800 },
+		{ date: new Date('2025-06-22'), amount: 19500 },
+		{ date: new Date('2025-07-10'), amount: -12000},
+		];
+	
+		cashFlows.sort((a, b) => {
+			return a.date - b.date;
+		});
+	
+		const months = [
+					['Январь', 'января'],
+					['Февраль', 'февраля'],
+					['Март', 'марта'],
+					['Апрель', 'апреля'],
+					['Май', 'мая'],
+					['Июнь', 'июня'],
+					['Июль', 'июля'],
+					['Август', 'августа'],
+					['Сентябрь', 'сентября'],
+					['Октябрь', 'октября'],
+					['Ноябрь', 'ноября'],
+					['Декабрь', 'декабря'],
+				];
+		const Sb = 100000;
+		const Se = 420000;
+		const Db = new Date('2025-01-01');
+		const De = new Date('2025-12-31');
+	
+			let table = '<table>';
+				table += `<thead><tr>
+					<th>Дата начала периода</th>
+					<th>Сумма в дату начала периода</th>
+					<th>Дата окончания периода</th>
+					<th>Сумма в дату окончания периода</th>
+					<th>Доходность</th>
+					</tr></thead><tbody>
+					<tr>
+						<td>${formatDate(Db, months)}</td>
+						<td>${Sb}</td>
+						<td>${formatDate(De, months)}</td>
+						<td>${Se}</td>
+						<td>${DietzRoR(Sb, Se, Db, De, cashFlows).toFixed(2)}</td>
+					</tr>
+					`;
+				table += '</tbody></table>';
+	
+				table += `<table><thead><tr>
+					<th>Тип операции</th>
+					<th>Дата</th>
+					<th>Сумма</th>
+					</tr></thead><tbody>
+				`;
+				for (let i = 0; i < cashFlows.length; i++) {
+					table += `<tr>
+						<td>${cashFlows[i].amount < 0 ? 'Снятие' : 'Пополнение'}</td>
+						<td>${formatDate(cashFlows[i].date, months)}</td>
+						<td>${Math.abs(cashFlows[i].amount)}&#x20bd;</td>
+						</tr>`;
+				}
+				table += `</tbody></table>`;
+				document.querySelector('#ror').innerHTML = table;
+		</script>
+
 
 		<script src="dist/reveal.js"></script>
 		<script src="plugin/notes/notes.js"></script>
